@@ -95,3 +95,4 @@ Endpoint to transfer money between accounts.
 * Improve error handling
 * Improve input data validation
 * Add transactions endpoint to retrieve all account transactions (e.g. `GET /accounts/<id>/transactions`)
+* Include database migration tool (e.g. Liquibase)
