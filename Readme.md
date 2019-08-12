@@ -81,6 +81,15 @@ Endpoint to transfer money between accounts.
 
 `Status Code: 201 Created`
 
+## Testing data
+This API doesn't include any endpoint to create accounts. Although the follwoing account ids are available to use:
+* aaee2b13-8a5e-4aed-a30b-5d8535c8ab20
+* 1ce455f7-f30c-4f55-81e2-7df2e8f88c7d
+* fb789eb9-a5a9-4ebe-a808-a9cd59b19772
+
+Use the `Get account` endpoint to get more information about each one and feel free to transfer money between them using `Transfer money` endpoint
+
+
 ## Tech Stack
 * Language: Kotlin
 * Build Tool: Gradle
