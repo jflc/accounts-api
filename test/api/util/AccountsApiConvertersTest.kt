@@ -1,10 +1,6 @@
-package api.util
+package com.github.jflc.api.util
 
 import com.github.jflc.api.model.AccountsTransferRequest
-import com.github.jflc.api.util.toAccountDetailsResponse
-import com.github.jflc.api.util.toAccountsTransferResponse
-import com.github.jflc.api.util.toListAccountsResponse
-import com.github.jflc.api.util.toTransactionDto
 import com.github.jflc.service.model.AccountDto
 import com.github.jflc.service.model.TransactionDto
 import java.math.BigDecimal

@@ -1,9 +1,7 @@
-package service.util
+package com.github.jflc.service.util
 
 import com.github.jflc.db.model.AccountEntity
 import com.github.jflc.db.model.TransactionEntity
-import com.github.jflc.service.util.toAccountDto
-import com.github.jflc.service.util.toTransactionDto
 import io.mockk.every
 import io.mockk.mockk
 import org.joda.time.DateTime
