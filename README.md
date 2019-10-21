@@ -1,6 +1,6 @@
 # Accounts API
 
-API to transfer money between accounts.
+RESTful API to transfer money between accounts.
 
 ## Dependencies
 * Java 1.8
@@ -10,6 +10,13 @@ API to transfer money between accounts.
 $ ./gradlew run
 ```
 Application will be listening at `http://localhost:8080`
+
+
+## How to test
+```shell script
+$ ./gradlew check
+```
+Besides the unit/integration test run by the gradle task described above, there is a Postman collection inside the folder [testresources](testresources) with some E2E tests.
 
 ## API Operations
 
@@ -101,7 +108,6 @@ Use the `Get account` endpoint to get more information about each one and feel f
 * Mock Library: MockK
 
 ## TODO
-* Improve error handling
 * Improve input data validation
 * Add transactions endpoint to retrieve all account transactions (e.g. `GET /accounts/<id>/transactions`)
 * Include database migration tool (e.g. Liquibase)

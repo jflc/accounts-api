@@ -10,11 +10,11 @@ import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@KtorExperimentalLocationsAPI
 internal class ApplicationTest {
 
     private val accountsService = mockk<AccountsService>()
 
-    @KtorExperimentalLocationsAPI
     @Test
     fun testHealthCheck() {
         withTestApplication({ accountsModule(accountsService) }) {

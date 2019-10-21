@@ -1,13 +1,16 @@
 package com.github.jflc.api
 
 import com.github.jflc.api.model.AccountsTransferRequest
-import com.github.jflc.api.util.accountsExceptionHandler
+import com.github.jflc.api.model.ErrorResponse
 import com.github.jflc.api.util.toAccountDetailsResponse
 import com.github.jflc.api.util.toAccountsTransferResponse
 import com.github.jflc.api.util.toListAccountsResponse
 import com.github.jflc.api.util.toTransactionDto
 import com.github.jflc.service.AccountsService
-import io.ktor.application.application
+import com.github.jflc.service.exception.AccountNotFoundException
+import com.github.jflc.service.exception.DuplicateRequestIdException
+import com.github.jflc.service.exception.InsufficientAccountBalanceException
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
@@ -17,6 +20,7 @@ import io.ktor.locations.post
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
+import org.slf4j.Logger
 import java.util.UUID
 
 /**
@@ -57,15 +61,11 @@ fun Route.accounts(service: AccountsService) {
 
     // list all accounts
     get<AccountsApi.List> {
-        try {
-            // execute operation
-            val result = service.findAll().toListAccountsResponse()
+        // execute operation
+        val result = service.findAll().toListAccountsResponse()
 
-            // send response
-            call.respond(HttpStatusCode.OK, result)
-        } catch (ex: Exception) {
-            accountsExceptionHandler(call, application.environment.log, ex)
-        }
+        // send response
+        call.respond(HttpStatusCode.OK, result)
     }
 
     // get specific account details
@@ -73,18 +73,14 @@ fun Route.accounts(service: AccountsService) {
         // get request parameters
         val id = it.id
 
-        try {
-            // execute operation
-            val result = service.findById(id)?.toAccountDetailsResponse()
+        // execute operation
+        val result = service.findById(id)?.toAccountDetailsResponse()
 
-            // send response
-            if (result != null) {
-                call.respond(HttpStatusCode.OK, result)
-            } else {
-                call.respond(HttpStatusCode.NotFound)
-            }
-        } catch (ex: Exception) {
-            accountsExceptionHandler(call, application.environment.log, ex)
+        // send response
+        if (result != null) {
+            call.respond(HttpStatusCode.OK, result)
+        } else {
+            call.respond(HttpStatusCode.NotFound)
         }
     }
 
@@ -92,15 +88,45 @@ fun Route.accounts(service: AccountsService) {
     post<AccountsApi.Transfer> {
         // get request content
         val transferRequest = call.receive<AccountsTransferRequest>()
-        try {
-            // execute operation
-            val result = service.transfer(transferRequest.toTransactionDto())
-                .toAccountsTransferResponse()
 
-            // send response
-            call.respond(HttpStatusCode.Created, result)
-        } catch (ex: Exception) {
-            accountsExceptionHandler(call, application.environment.log, ex)
+        // execute operation
+        val result = service.transfer(transferRequest.toTransactionDto())
+            .toAccountsTransferResponse()
+
+        // send response
+        call.respond(HttpStatusCode.Created, result)
+    }
+}
+
+/**
+ * Handles Accounts API exceptions.
+ *
+ * @param call api call
+ * @param log application logger
+ * @param ex exception to handle
+ */
+suspend fun accountsExceptionHandler(call: ApplicationCall, log: Logger, ex: Throwable) {
+
+    when(ex) {
+        is AccountNotFoundException -> {
+            log.info(ex.message)
+            val result = ErrorResponse(1, "Account doesn't exists", listOf(ex.accountId))
+            call.respond(HttpStatusCode.BadRequest, result)
+        }
+        is DuplicateRequestIdException -> {
+            log.warn(ex.message)
+            val result = ErrorResponse(2, "Request id already processed", listOf(ex.requestId))
+            call.respond(HttpStatusCode.Conflict, result)
+        }
+        is InsufficientAccountBalanceException -> {
+            log.info(ex.message)
+            val result = ErrorResponse(3, "Insufficient balance to perform transfer", listOf(ex.accountId))
+            call.respond(HttpStatusCode.BadRequest, result)
+        }
+        else -> {
+            log.error("Unexpected exception", ex)
+            val result = ErrorResponse(Int.MAX_VALUE, "Unexpected internal error", emptyList())
+            call.respond(HttpStatusCode.InternalServerError, result)
         }
     }
 }

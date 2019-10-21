@@ -2,6 +2,7 @@ package com.github.jflc
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.github.jflc.api.accounts
+import com.github.jflc.api.accountsExceptionHandler
 import com.github.jflc.db.dbInit
 import com.github.jflc.service.AccountsService
 import io.ktor.application.Application
@@ -13,6 +14,7 @@ import io.ktor.features.Compression
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DataConversion
 import io.ktor.features.DefaultHeaders
+import io.ktor.features.StatusPages
 import io.ktor.features.deflate
 import io.ktor.features.gzip
 import io.ktor.features.minimumSize
@@ -50,7 +52,6 @@ fun Application.module() {
 }
 
 @KtorExperimentalLocationsAPI
-@kotlin.jvm.JvmOverloads
 fun Application.accountsModule(accountsService: AccountsService) {
     install(Compression) {
         gzip {
@@ -99,6 +100,17 @@ fun Application.accountsModule(accountsService: AccountsService) {
             enable(SerializationFeature.INDENT_OUTPUT)
         }
     }
+
+    install(StatusPages) {
+        exception<Throwable> { ex ->
+            accountsExceptionHandler(
+                log = environment.log,
+                call = call,
+                ex = ex
+            )
+        }
+    }
+
 
     routing {
         get("/healthcheck") {

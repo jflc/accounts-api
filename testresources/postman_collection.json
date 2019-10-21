@@ -7,6 +7,24 @@
 	"item": [
 		{
 			"name": "Health Check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "70063e1b-d454-4386-b3a4-ea47fbae60de",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Body is correct\", function () {",
+							"    pm.response.to.have.body(\"UP\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -26,6 +44,25 @@
 		},
 		{
 			"name": "List Accounts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "89e32a2b-710c-4532-9c6c-3c6cdb02b044",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Results list has 3 elements\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.results).to.have.lengthOf(3);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -45,6 +82,25 @@
 		},
 		{
 			"name": "Get Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "47067720-56e8-4fbf-82ea-ff42e10c0cb5",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response object is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('object').that.has.all.keys('id', 'name', 'balance');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -71,6 +127,25 @@
 		},
 		{
 			"name": "Transfer Money",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1ded3465-0e86-4d39-9b5b-5f9120bfa460",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Response object is correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('object').that.has.all.keys('requestId', 'amount', 'at');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [

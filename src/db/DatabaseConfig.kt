@@ -57,9 +57,9 @@ private fun dbInitData(db: Database) {
             name = "Joao Cardoso"
             balance = BigDecimal.valueOf(0.50)
         }
-        // Create Nikolay Storonsky
+        // Create Satoshi Nakamoto
         AccountsRepository.new(UUID.fromString("1ce455f7-f30c-4f55-81e2-7df2e8f88c7d")) {
-            name = "Nikolay Storonsky"
+            name = "Satoshi Nakamoto"
             balance = BigDecimal.valueOf(15048509238.35)
         }
         // Create Lemmy Kilmister account
